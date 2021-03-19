@@ -1,16 +1,17 @@
 import Config from "../../core/Config";
 import Status from "../../core/enums/Status";
+import Clip from "../../core/models/Clip";
 import User from "../../core/models/User";
 import ApiClient from "../../utils/ApiClient";
 import { AsyncAction, asyncType } from "../middleware/asyncMiddleware";
 
 export interface ClipsStore {
-  myClips: Array<any>;
+  myClips: Array<Clip>;
   myClipsStatus: Status;
 }
 
 const initialState = {
-  myClips: [] as Array<any>,
+  myClips: [] as Array<Clip>,
   myClipsStatus: Status.INITIAL,
 };
 
