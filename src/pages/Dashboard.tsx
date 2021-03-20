@@ -1,12 +1,26 @@
-import React, { useEffect } from "react";
+import React, { useEffect, useState } from "react";
 import { connect } from "react-redux";
 import { compose } from "redux";
 import ClipListItem from "../components/ClipListItem";
 import { AsyncAction } from "../redux/middleware/asyncMiddleware";
-import { fetchMyClips } from "../redux/modules/clips";
+import { fetchMyClips, fetchVideo } from "../redux/modules/clips";
 import { StoreState } from "../redux/reducer";
 import styled from "styled-components";
 import { PageLayout, PageWrapper } from "../components/Page";
+import MintModal from "../components/modals/MintModal";
+import Clip from "../core/models/Clip";
+
+const DashboardPageWrapper = styled(PageWrapper)<{ blur?: boolean }>`
+  ${({ blur }) =>
+    blur
+      ? `
+      filter: blur(10px) grayscale(100%);
+      pointer-events: none;
+      `
+      : "filter: blur(0px) grayscale(0%)"}
+
+  transition: all 250ms ease-in-out;
+`;
 
 const ClipsList = styled.div`
   display: grid;
@@ -17,23 +31,38 @@ const ClipsList = styled.div`
 interface DashboardProps {
   myClips: Array<any>;
   fetchMyClips: () => Promise<AsyncAction>;
+  fetchVideo: (id: string) => Promise<AsyncAction>;
 }
 
-const Dashboard: React.FC<DashboardProps> = ({ myClips, fetchMyClips }) => {
+const Dashboard: React.FC<DashboardProps> = ({
+  myClips,
+  fetchVideo,
+  fetchMyClips,
+}) => {
+  const [activeClip, setActiveClip] = useState<Clip | null>(null);
+
   useEffect(() => {
     fetchMyClips();
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
+  const onMint = (clip: Clip) => () => {
+    // fetchVideo(clip.videoId);
+    if (!activeClip) setActiveClip(clip);
+  };
+
+  const onClipClose = () => setActiveClip(null);
+
   return (
     <PageLayout>
-      <PageWrapper>
+      {activeClip && <MintModal clip={activeClip} onClose={onClipClose} />}
+      <DashboardPageWrapper blur={!!activeClip}>
         <ClipsList>
           {myClips.map((clip) => (
-            <ClipListItem key={clip.id} clip={clip} />
+            <ClipListItem key={clip.id} clip={clip} onMint={onMint(clip)} />
           ))}
         </ClipsList>
-      </PageWrapper>
+      </DashboardPageWrapper>
     </PageLayout>
   );
 };
@@ -46,6 +75,7 @@ export default compose<React.FC & DashboardProps>(
     }),
     {
       fetchMyClips,
+      fetchVideo,
     }
   )
 )(Dashboard);

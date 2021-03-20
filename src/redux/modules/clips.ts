@@ -11,6 +11,9 @@ export interface ClipsStore {
 
   activeClip: Clip | null;
   activeClipStatus: Status;
+
+  activeVideo: any;
+  activeVideoStatus: Status;
 }
 
 const initialState = {
@@ -19,10 +22,14 @@ const initialState = {
 
   activeClip: null,
   activeClipStatus: Status.INITIAL,
+
+  activeVideo: null,
+  activeVideoStatus: Status.INITIAL,
 };
 
 const FETCH_MY_CLIPS = asyncType("redux/clips/FETCH_MY_CLIPS");
 const FETCH_MY_CLIP = asyncType("redux/clips/FETCH_MY_CLIP");
+const FETCH_VIDEO = asyncType("redux/clips/FETCH_VIDEO");
 
 export default function reducer(
   state = initialState,
@@ -73,6 +80,28 @@ export default function reducer(
       };
     }
 
+    case FETCH_VIDEO.INITIAL: {
+      return {
+        ...state,
+        activeClipStatus: Status.LOADING,
+      };
+    }
+
+    case FETCH_VIDEO.SUCCESS: {
+      return {
+        ...state,
+        activeClip: action.result?.body as Clip,
+        activeClipStatus: Status.SUCCESS,
+      };
+    }
+
+    case FETCH_VIDEO.FAIL: {
+      return {
+        ...state,
+        activeClipStatus: Status.FAIL,
+      };
+    }
+
     default:
       return state;
   }
@@ -91,6 +120,14 @@ export function fetchMyClip(id: string) {
     types: FETCH_MY_CLIP,
     promise: (client: ApiClient) =>
       client.get(`${Config.app.apiUrl}/twitch/clip/${id}`),
+  };
+}
+
+export function fetchVideo(id: string) {
+  return {
+    types: FETCH_VIDEO,
+    promise: (client: ApiClient) =>
+      client.get(`${Config.app.apiUrl}/twitch/video/${id}`),
   };
 }
 

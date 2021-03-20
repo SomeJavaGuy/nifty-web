@@ -2,6 +2,7 @@ import React from "react";
 import styled from "styled-components";
 
 import Clip from "../core/models/Clip";
+import { parseViewsNumber } from "../utils/NumberUtils";
 import { FlexRow } from "./Flexbox";
 
 const StyledClip = styled.div`
@@ -72,9 +73,10 @@ const MintBtn = styled.button`
 
 interface ClipListItemProps {
   clip: Clip;
+  onMint?: () => void;
 }
 
-const ClipListItem: React.FC<ClipListItemProps> = ({ clip }) => {
+const ClipListItem: React.FC<ClipListItemProps> = ({ clip, onMint }) => {
   const {
     id,
     title,
@@ -84,17 +86,10 @@ const ClipListItem: React.FC<ClipListItemProps> = ({ clip }) => {
     viewCount,
   } = clip;
 
-  const parseViews = (views: number) => {
-    if (views > 1000) {
-      return `${Math.floor(views / 100) / 10}K`;
-    }
-    return views;
-  };
-
   return (
     <StyledClip>
       <ClipThumb thumbnail={thumbnailUrl}>
-        <ViewsItem>{parseViews(viewCount)} views</ViewsItem>
+        <ViewsItem>{parseViewsNumber(viewCount)} views</ViewsItem>
       </ClipThumb>
       <ClipMetadata>
         <Title>{title}</Title>
@@ -103,7 +98,7 @@ const ClipListItem: React.FC<ClipListItemProps> = ({ clip }) => {
             <span>Clipped by</span>
             <span>{creatorName}</span>
           </ClipperName>
-          <MintBtn>Mint</MintBtn>
+          <MintBtn onClick={onMint}>Mint</MintBtn>
         </FlexRow>
       </ClipMetadata>
     </StyledClip>
