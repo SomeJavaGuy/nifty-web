@@ -7,6 +7,7 @@ import PrivateRoute from "./components/PrivateRoute";
 import CreateNFT from "./pages/CreateNFT";
 import Dashboard from "./pages/Dashboard";
 import LandingPage from "./pages/LandingPage";
+import Profile from "./pages/Profile";
 import createStore from "./redux/createStore";
 import ApiClient from "./utils/ApiClient";
 
@@ -31,10 +32,19 @@ export default function App() {
           />
           <Route
             exact
-            path="/create/:clipId"
+            path="/mint/:clipId"
             component={() => (
               <PrivateRoute>
                 <CreateNFT />
+              </PrivateRoute>
+            )}
+          />
+          <Route
+            exact
+            path="/profile"
+            component={() => (
+              <PrivateRoute>
+                <Profile />
               </PrivateRoute>
             )}
           />

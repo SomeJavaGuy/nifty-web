@@ -1,8 +1,53 @@
 import React from "react";
 import { connect } from "react-redux";
 import { compose } from "redux";
-
 import { StoreState } from "../redux/reducer";
+import styled from "styled-components";
+
+const StyledLandingPage = styled.main`
+  background-image: url("/landing-bg.png");
+  background-size: 100% auto;
+  background-position: center;
+`;
+
+const HeroSection = styled.section`
+  background: transparent linear-gradient(180deg, #18181d00 0%, #18181d 100%) 0%
+    0% no-repeat padding-box;
+`;
+
+const HeroSectionContent = styled.div`
+  min-height: 500px;
+  margin: 0 auto;
+  max-width: 1480px;
+  display: flex;
+  justify-content: center;
+  flex-direction: column;
+`;
+
+const Heading1 = styled.h1`
+  font-size: 48px;
+  margin: 0;
+  line-height: 65px;
+  font-weight: bold;
+`;
+
+const Heading2 = styled.h2`
+  font-size: 24px;
+  font-weight: bold;
+  margin: 0;
+`;
+
+const TopStreamersSection = styled.section`
+  max-width: 1480px;
+  margin: 24px auto 54px;
+`;
+
+const HighLightSection = styled.section`
+  max-width: 1480px;
+  margin: 24px auto 54px;
+`;
+
+const SubText = styled.p``;
 
 interface LandingPageProps {
   loggedIn: boolean;
@@ -10,10 +55,31 @@ interface LandingPageProps {
 
 const LandingPage: React.FC<LandingPageProps> = ({ loggedIn }) => {
   return (
-    <div>
-      LANDING PAGE
-      {loggedIn && <div>LOGGED IN</div>}
-    </div>
+    <StyledLandingPage>
+      <HeroSection>
+        <HeroSectionContent>
+          <Heading1>
+            Claim your Achievment
+            <br />
+            Game for Benifits exclusive!
+          </Heading1>
+          <SubText>
+            Increase your Account by using special features and
+            <br />
+            promos from Achievment.
+          </SubText>
+        </HeroSectionContent>
+      </HeroSection>
+      <TopStreamersSection>
+        <Heading2>TOP STREAMERS</Heading2>
+      </TopStreamersSection>
+      <HighLightSection>
+        <Heading2>You won't believe these trickshots</Heading2>
+      </HighLightSection>
+      <HighLightSection>
+        <Heading2>Insane luck</Heading2>
+      </HighLightSection>
+    </StyledLandingPage>
   );
 };
 

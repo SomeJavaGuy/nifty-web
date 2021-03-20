@@ -12,5 +12,5 @@ export default interface Clip {
   title: string;
   url: string;
   videoId: string;
-  viewCount: Number;
+  viewCount: number;
 }

@@ -1,21 +1,28 @@
 import Config from "../../core/Config";
 import Status from "../../core/enums/Status";
 import Clip from "../../core/models/Clip";
-import User from "../../core/models/User";
+import MintingSettings from "../../core/models/MintingSettings";
 import ApiClient from "../../utils/ApiClient";
 import { AsyncAction, asyncType } from "../middleware/asyncMiddleware";
 
 export interface ClipsStore {
   myClips: Array<Clip>;
   myClipsStatus: Status;
+
+  activeClip: Clip | null;
+  activeClipStatus: Status;
 }
 
 const initialState = {
   myClips: [] as Array<Clip>,
   myClipsStatus: Status.INITIAL,
+
+  activeClip: null,
+  activeClipStatus: Status.INITIAL,
 };
 
 const FETCH_MY_CLIPS = asyncType("redux/clips/FETCH_MY_CLIPS");
+const FETCH_MY_CLIP = asyncType("redux/clips/FETCH_MY_CLIP");
 
 export default function reducer(
   state = initialState,
@@ -44,6 +51,28 @@ export default function reducer(
       };
     }
 
+    case FETCH_MY_CLIP.INITIAL: {
+      return {
+        ...state,
+        activeClipStatus: Status.LOADING,
+      };
+    }
+
+    case FETCH_MY_CLIP.SUCCESS: {
+      return {
+        ...state,
+        activeClip: action.result?.body as Clip,
+        activeClipStatus: Status.SUCCESS,
+      };
+    }
+
+    case FETCH_MY_CLIP.FAIL: {
+      return {
+        ...state,
+        activeClipStatus: Status.FAIL,
+      };
+    }
+
     default:
       return state;
   }
@@ -54,5 +83,23 @@ export function fetchMyClips() {
     types: FETCH_MY_CLIPS,
     promise: (client: ApiClient) =>
       client.get(`${Config.app.apiUrl}/twitch/clips`),
+  };
+}
+
+export function fetchMyClip(id: string) {
+  return {
+    types: FETCH_MY_CLIP,
+    promise: (client: ApiClient) =>
+      client.get(`${Config.app.apiUrl}/twitch/clip/${id}`),
+  };
+}
+
+export function mintMyClip(id: string, mintingSettings: MintingSettings) {
+  return {
+    types: FETCH_MY_CLIP,
+    promise: (client: ApiClient) =>
+      client.post(`${Config.app.apiUrl}/twitch/clip/${id}`, {
+        body: JSON.stringify(mintingSettings),
+      }),
   };
 }

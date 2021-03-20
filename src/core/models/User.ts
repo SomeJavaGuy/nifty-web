@@ -1,10 +1,10 @@
 export default interface User {
   id: string;
   twitchId: string;
-  email: String;
+  email: string;
 
-  displayName?: String;
-  description?: String;
-  profileImage?: String;
-  offlineImage?: String;
+  displayName?: string;
+  description?: string;
+  profileImage?: string;
+  offlineImage?: string;
 }
