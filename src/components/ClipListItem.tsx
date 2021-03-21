@@ -77,14 +77,7 @@ interface ClipListItemProps {
 }
 
 const ClipListItem: React.FC<ClipListItemProps> = ({ clip, onMint }) => {
-  const {
-    id,
-    title,
-    broadcasterName,
-    creatorName,
-    thumbnailUrl,
-    viewCount,
-  } = clip;
+  const { title, creatorName, thumbnailUrl, viewCount } = clip;
 
   return (
     <StyledClip>

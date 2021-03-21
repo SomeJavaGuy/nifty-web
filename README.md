@@ -1,3 +1,9 @@
+<!-- For secondary sales you have to overwrite the transaction function. -->
+<!-- Zora for minting? -->
+<!-- Covalent to show streamer or collector portfolio size -->
+<!-- https://github.com/ourzora/zdk/blob/master/docs/minting.md -->
+<!-- https://js.ipfs.io/ -->
+
 # Getting Started with Create React App
 
 This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).

@@ -8,12 +8,10 @@ const StyledLandingPage = styled.main`
   background-image: url("/landing-bg.png");
   background-size: 100% auto;
   background-position: center;
+  background-repeat: no-repeat;
 `;
 
-const HeroSection = styled.section`
-  background: transparent linear-gradient(180deg, #18181d00 0%, #18181d 100%) 0%
-    0% no-repeat padding-box;
-`;
+const HeroSection = styled.section``;
 
 const HeroSectionContent = styled.div`
   min-height: 500px;
