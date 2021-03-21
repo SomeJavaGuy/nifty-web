@@ -9,6 +9,20 @@ body {
   color: white;
 }
 
+body.modal-open {
+  overflow-y: hidden;
+}
+
+#root {
+  filter: blur(0px) grayscale(0%);
+  transition: all 250ms ease-in-out;
+}
+
+body.modal-open #root {
+  filter: blur(10px) grayscale(100%);
+  pointer-events: none;
+}
+
 
 input[type=number]::-webkit-inner-spin-button, 
 input[type=number]::-webkit-outer-spin-button { 

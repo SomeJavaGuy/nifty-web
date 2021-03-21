@@ -6,7 +6,7 @@ export default interface MintingSettings {
   endTime?: Date;
   subscribersAllowed?: boolean;
   followersAllowed?: boolean;
-  copies?: Number;
-  startingPrice?: Number;
+  copies?: number;
+  startingPrice?: number;
   description?: string;
 }

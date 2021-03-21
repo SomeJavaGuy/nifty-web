@@ -10,18 +10,6 @@ import { PageLayout, PageWrapper } from "../components/Page";
 import MintModal from "../components/modals/MintModal";
 import Clip from "../core/models/Clip";
 
-const DashboardPageWrapper = styled(PageWrapper)<{ blur?: boolean }>`
-  ${({ blur }) =>
-    blur
-      ? `
-      filter: blur(10px) grayscale(100%);
-      pointer-events: none;
-      `
-      : "filter: blur(0px) grayscale(0%)"}
-
-  transition: all 250ms ease-in-out;
-`;
-
 const ClipsList = styled.div`
   display: grid;
   grid-template-columns: repeat(4, 1fr);
@@ -56,13 +44,13 @@ const Dashboard: React.FC<DashboardProps> = ({
   return (
     <PageLayout>
       {activeClip && <MintModal clip={activeClip} onClose={onClipClose} />}
-      <DashboardPageWrapper blur={!!activeClip}>
+      <PageWrapper>
         <ClipsList>
           {myClips.map((clip) => (
             <ClipListItem key={clip.id} clip={clip} onMint={onMint(clip)} />
           ))}
         </ClipsList>
-      </DashboardPageWrapper>
+      </PageWrapper>
     </PageLayout>
   );
 };

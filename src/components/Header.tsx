@@ -7,10 +7,12 @@ import styled from "styled-components";
 import Config from "../core/Config";
 import { AsyncAction } from "../redux/middleware/asyncMiddleware";
 import { fetchProfile } from "../redux/modules/auth";
+import { fetchCurrency } from "../redux/modules/currency";
 import { StoreState } from "../redux/reducer";
 
 const HeaderWrapper = styled.div`
   padding: 0 68px;
+  background: #18181d;
 `;
 
 const StyledHeader = styled.header`
@@ -148,13 +150,19 @@ const Search = styled.input`
 interface HeaderProps {
   loggedIn: boolean;
   fetchProfile: () => Promise<AsyncAction>;
+  fetchCurrency: () => Promise<AsyncAction>;
 }
 
-const Header: React.FC<HeaderProps> = ({ loggedIn, fetchProfile }) => {
+const Header: React.FC<HeaderProps> = ({
+  loggedIn,
+  fetchProfile,
+  fetchCurrency,
+}) => {
   const [search, setSearch] = useState("");
 
   useEffect(() => {
     fetchProfile();
+    fetchCurrency();
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
@@ -199,6 +207,7 @@ export default compose<React.FC & HeaderProps>(
     }),
     {
       fetchProfile,
+      fetchCurrency,
     }
   )
 )(Header);

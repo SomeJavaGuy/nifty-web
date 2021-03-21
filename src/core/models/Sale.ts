@@ -9,4 +9,7 @@ export default interface Sale {
 
   mintingSettings: MintingSettings;
   clip: Clip;
+
+  metadataCID: string;
+  fileCID: string;
 }

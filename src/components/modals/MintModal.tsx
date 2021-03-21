@@ -1,21 +1,21 @@
+import { TextField } from "@material-ui/core";
 import React, { useState } from "react";
-import { Portal } from "react-portal";
-import styled from "styled-components";
-import Clip from "../../core/models/Clip";
-import { parseViewsNumber } from "../../utils/NumberUtils";
-import { FlexRow } from "../Flexbox";
-import OutsideClick from "../OutsideClick";
-import { mintMyClip } from "../../redux/modules/sales";
 import { connect } from "react-redux";
 import { compose } from "redux";
-import { StoreState } from "../../redux/reducer";
+import styled from "styled-components";
+
+import SaleType from "../../core/enums/SaleType";
+import Clip from "../../core/models/Clip";
 import MintingSettings from "../../core/models/MintingSettings";
 import { AsyncAction } from "../../redux/middleware/asyncMiddleware";
-import SaleType from "../../core/enums/SaleType";
-import { TextField } from "@material-ui/core";
+import { mintMyClip } from "../../redux/modules/sales";
+import { StoreState } from "../../redux/reducer";
+import { parseViewsNumber } from "../../utils/NumberUtils";
+import { FlexRow } from "../Flexbox";
+import Modal from "./Modal";
 
 const StyledModal = styled.div`
-  position: fixed;
+  position: absolute;
   top: 180px;
   left: 50%;
   transform: translateX(-50%);
@@ -25,6 +25,7 @@ const StyledModal = styled.div`
   display: grid;
   grid-template-columns: 1fr 1fr;
   grid-gap: 32px;
+  padding-bottom: 80px;
 `;
 
 const HeadingWrapper = styled(FlexRow)`
@@ -171,7 +172,7 @@ const FormWrapper = styled.div``;
 
 const StyledField = styled(TextField)`
   width: 100%;
-  margin: 20px 0 !important;
+  margin: 20px 0 48px !important;
 
   .MuiInput-underline {
     &:hover {
@@ -214,6 +215,37 @@ const DoubleColGrid = styled.div`
   grid-gap: 24px;
 `;
 
+const ModalFooter = styled.div`
+  display: grid;
+  grid-template-columns: 1fr 2fr;
+  grid-gap: 16px;
+  margin-top: 54px;
+`;
+
+const BaseButton = styled.button`
+  width: 100%;
+  padding: 12px 0;
+  outline: none;
+  font-weight: bold;
+  font-size: 16px;
+  cursor: pointer;
+  border-radius: 24px;
+`;
+
+const PrimaryButton = styled(BaseButton)`
+  font-weight: bold;
+  color: #00ffba;
+  background: rgba(0, 255, 186, 0.25);
+  border: 1px solid #2c2c2c;
+`;
+
+const SecondaryButton = styled(BaseButton)`
+  background: #2c2c2c;
+  color: white;
+  font-weight: 500;
+  border: none;
+`;
+
 interface MintModalProps {
   clip: Clip;
   onClose: () => void;
@@ -229,6 +261,7 @@ interface ComposeProps {
 const MintModal: React.FC<MintModalProps & ComposeProps> = ({
   clip,
   onClose,
+  mintMyClip,
 }) => {
   const [mintingSettings, setMintingSettings] = useState<MintingSettings>({
     saleType: SaleType.LimitedTime,
@@ -315,103 +348,112 @@ const MintModal: React.FC<MintModalProps & ComposeProps> = ({
     });
   };
 
+  const createMint = () =>
+    mintMyClip(clip.id, mintingSettings)
+      .then(onClose)
+      .catch((e) => {
+        console.log("Failed to create nft!");
+      });
+
   return (
-    <Portal>
-      <OutsideClick onTrigger={onClose}>
-        <StyledModal>
-          <VideoWrapper>
-            <Frame title={title} src={`${clip.embedUrl}&parent=localhost`} />
-            {/* <video controls src={embedUrl} poster={thumbnailUrl} /> */}
-          </VideoWrapper>
-          <SettingsWrapper>
-            <HeadingWrapper>
-              <MetadataWrapper>
-                <Title>{title}</Title>
-                <Username>{broadcasterName}</Username>
-                <Clipper>
-                  <span>Clipped by</span>
-                  <span>{creatorName}</span>
-                </Clipper>
-              </MetadataWrapper>
-              <ViewsItem>{parseViewsNumber(viewCount)} views</ViewsItem>
-            </HeadingWrapper>
+    <Modal onClose={onClose}>
+      <StyledModal>
+        <VideoWrapper>
+          <Frame title={title} src={`${clip.embedUrl}&parent=localhost`} />
+        </VideoWrapper>
+        <SettingsWrapper>
+          <HeadingWrapper>
+            <MetadataWrapper>
+              <Title>{title}</Title>
+              <Username>{broadcasterName}</Username>
+              <Clipper>
+                <span>Clipped by</span>
+                <span>{creatorName}</span>
+              </Clipper>
+            </MetadataWrapper>
+            <ViewsItem>{parseViewsNumber(viewCount)} views</ViewsItem>
+          </HeadingWrapper>
 
-            <Heading4>Lorem ipsum</Heading4>
+          <Heading4>Lorem ipsum</Heading4>
 
-            <AuctionTypeWrapper>
-              <AuctionType
-                active={saleType === SaleType.LimitedQuantity}
-                onClick={setSaleType(SaleType.LimitedQuantity)}
-              >
-                <div>Limited QTY</div>
-                <p>
-                  Increase your Account by using special features and promos
-                  from Achievment.
-                </p>
-              </AuctionType>
-              <TypeOr>or</TypeOr>
-              <AuctionType
-                active={saleType === SaleType.LimitedTime}
-                onClick={setSaleType(SaleType.LimitedTime)}
-              >
-                <div>Limited Timeframe</div>
-                <p>
-                  Increase your Account by using special features and promos
-                  from Achievment.
-                </p>
-              </AuctionType>
-            </AuctionTypeWrapper>
+          <AuctionTypeWrapper>
+            <AuctionType
+              active={saleType === SaleType.LimitedQuantity}
+              onClick={setSaleType(SaleType.LimitedQuantity)}
+            >
+              <div>Limited QTY</div>
+              <p>
+                Increase your Account by using special features and promos from
+                Achievment.
+              </p>
+            </AuctionType>
+            <TypeOr>or</TypeOr>
+            <AuctionType
+              active={saleType === SaleType.LimitedTime}
+              onClick={setSaleType(SaleType.LimitedTime)}
+            >
+              <div>Limited Timeframe</div>
+              <p>
+                Increase your Account by using special features and promos from
+                Achievment.
+              </p>
+            </AuctionType>
+          </AuctionTypeWrapper>
 
-            <FormWrapper>
+          <FormWrapper>
+            <StyledField
+              type="number"
+              label="Starting price"
+              value={startingPrice}
+              onChange={onChangePrice}
+            />
+
+            <DoubleColGrid>
               <StyledField
-                type="number"
-                label="Starting price"
-                value={startingPrice}
-                onChange={onChangePrice}
+                label="Starts"
+                type="datetime-local"
+                defaultValue={startTime?.toString()}
+                onChange={onStartTimeChange}
+                InputLabelProps={{
+                  shrink: true,
+                }}
               />
-
-              <DoubleColGrid>
-                <StyledField
-                  label="Starts"
-                  type="datetime-local"
-                  defaultValue={startTime?.toString()}
-                  onChange={onStartTimeChange}
-                  InputLabelProps={{
-                    shrink: true,
-                  }}
-                />
-                <StyledField
-                  label="Ends"
-                  type="datetime-local"
-                  defaultValue={endTime?.toString()}
-                  onChange={onEndTimeChange}
-                  InputLabelProps={{
-                    shrink: true,
-                  }}
-                />
-              </DoubleColGrid>
               <StyledField
-                multiline
-                label="Description"
-                value={description}
-                onChange={onDescriptionChange}
+                label="Ends"
+                type="datetime-local"
+                defaultValue={endTime?.toString()}
+                onChange={onEndTimeChange}
+                InputLabelProps={{
+                  shrink: true,
+                }}
               />
-            </FormWrapper>
+            </DoubleColGrid>
+            <StyledField
+              multiline
+              label="Description"
+              value={description}
+              onChange={onDescriptionChange}
+            />
+          </FormWrapper>
 
-            <Heading4>Limited collector categories</Heading4>
+          <Heading4>Limited collector categories</Heading4>
 
-            <BuyerCategorySelection>
-              <Chip active={subscribersAllowed} onClick={toggleAllowSubs}>
-                SUBSCRIBERS
-              </Chip>
-              <Chip active={followersAllowed} onClick={toggleAllowFollowers}>
-                FOLLOWERS
-              </Chip>
-            </BuyerCategorySelection>
-          </SettingsWrapper>
-        </StyledModal>
-      </OutsideClick>
-    </Portal>
+          <BuyerCategorySelection>
+            <Chip active={subscribersAllowed} onClick={toggleAllowSubs}>
+              SUBSCRIBERS
+            </Chip>
+            <Chip active={followersAllowed} onClick={toggleAllowFollowers}>
+              FOLLOWERS
+            </Chip>
+          </BuyerCategorySelection>
+
+          <ModalFooter>
+            <SecondaryButton onClick={onClose}>Cancel</SecondaryButton>
+            <PrimaryButton onClick={createMint}>Create</PrimaryButton>
+          </ModalFooter>
+        </SettingsWrapper>
+      </StyledModal>
+    </Modal>
   );
 };
 
